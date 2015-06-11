@@ -1,6 +1,6 @@
 {
   "name": "ember-data-patch-persistance",
-  "version": "0.0.2",
+  "version": "0.0.3-beta1",
   "description": "An addon that allows saving partial models with HTTP PATCH.",
   "directories": {
     "doc": "doc",
