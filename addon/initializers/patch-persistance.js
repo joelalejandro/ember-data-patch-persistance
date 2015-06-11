@@ -7,6 +7,17 @@ export function initialize() {
   }
 
   DS.Model.reopen({
+    patch: function() {
+      var model = this;
+      return DS.PromiseObject.create({
+        promise: this._internalModel.patch().then(function() {
+          return model;
+        })
+      })
+    }
+  });
+
+  DS.InternalModel.reopen({
     _isPatch: false,
     patch: function() {
       var promiseLabel = "DS: Model#patch " + this;
@@ -14,7 +25,7 @@ export function initialize() {
       var _this = this;
 
       this._isPatch = true;
-      this.get('store').scheduleSave(this, resolver);
+      this.store.scheduleSave(this, resolver);
 
       this.eachRelationship(function(name, relationship) {
         if (relationship.kind === "belongsTo") {
@@ -37,9 +48,7 @@ export function initialize() {
       this._inFlightAttributes = this._attributes;
       this._attributes = Ember.create(null);
 
-      return DS.PromiseObject.create({
-        promise: resolver.promise
-      });
+      return resolver.promise;
     }
   });
 
